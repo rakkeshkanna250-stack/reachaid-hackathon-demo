@@ -1,0 +1,14 @@
+# Python runtime and environment files
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Writable application state and generated operation logs
+hospital-ops-platform/data/*
+!hospital-ops-platform/data/.gitkeep
+
+# Local editor and operating-system files
+.DS_Store
+.idea/
+.vscode/

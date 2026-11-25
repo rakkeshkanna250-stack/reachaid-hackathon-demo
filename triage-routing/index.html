@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#09131f">
+  <title>ReachAid | Triage & Hospital Routing</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="ReachAid operations home"><span class="brand-icon">+</span><span>reach<span>aid</span></span></a>
+      <div class="top-center"><span class="live-indicator"></span><span>OPERATIONS CONTROL</span><span class="top-divider"></span><span class="demo-tag">HACKATHON SIMULATION</span></div>
+      <div class="top-right"><span class="clock" id="clock">--:--:--</span><button class="reset-button" id="reset-demo" type="button">Reset demo</button></div>
+    </header>
+
+    <main class="page">
+      <section class="page-heading">
+        <div>
+          <div class="eyebrow">PRE-HOSPITAL TRIAGE <span>/</span> DESTINATION COORDINATION</div>
+          <h1>Choose the right care, <em>not just the closest.</em></h1>
+          <p>Compare simulated equipment readiness, capacity, congestion and three route options for each hospital.</p>
+        </div>
+        <div class="incident-status"><span class="status-pulse"></span><div><small>ACTIVE INCIDENT</small><strong id="incident-id">108 · RA-2408</strong></div><span class="incident-state" id="incident-state">INTAKE</span></div>
+      </section>
+
+      <section class="intake-strip" aria-label="Emergency intake">
+        <div class="intake-main">
+          <div class="intake-icon">108</div>
+          <div class="intake-copy"><small>SIMULATED EMERGENCY CALL</small><strong id="intake-title">Cardiac emergency · Cardiac arrest</strong><span id="intake-detail">Caller connected · Location pinned near SRM Kattankulathur</span></div>
+          <div class="complaint-control"><label for="complaint">COMPLAINT / TRIAGE PATH</label><select id="complaint">
+            <option value="heart-attack" selected>Major heart attack</option>
+            <option value="cardiac-arrest">Cardiac arrest</option>
+            <option value="trauma">Severe trauma / accident</option>
+            <option value="stroke">Acute stroke</option>
+          </select></div>
+          <button id="raise-call" class="raise-button" type="button"><span>↗</span> Raise 108 call</button>
+        </div>
+        <div class="intake-steps" aria-label="Patient transport workflow">
+          <div class="flow-step complete" data-step="call"><i>✓</i><span>Call received</span></div><b></b>
+          <div class="flow-step current" data-step="dispatch"><i>2</i><span>Choose destination</span></div><b></b>
+          <div class="flow-step" data-step="pickup"><i>3</i><span>Patient pickup</span></div><b></b>
+          <div class="flow-step" data-step="transport"><i>4</i><span>Hospital arrival</span></div>
+        </div>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="panel map-panel">
+          <div class="panel-heading">
+            <div><div class="section-kicker">LIVE DISPATCH MAP <span class="sim-badge">SIMULATED</span></div><h2>Incident & hospital network</h2></div>
+            <div class="map-location"><span>⌖</span> Kattankulathur, Tamil Nadu</div>
+          </div>
+          <div class="map-wrap">
+            <svg id="route-map" viewBox="0 0 740 430" role="img" aria-label="Illustrative dispatch map showing an incident, four hospitals and route alternatives">
+              <defs>
+                <pattern id="mapgrid" width="42" height="42" patternUnits="userSpaceOnUse"><path d="M42 0H0V42" fill="none" stroke="#203044" stroke-width="1"/></pattern>
+                <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <rect width="740" height="430" fill="#0d1a27"/><rect width="740" height="430" fill="url(#mapgrid)" opacity=".72"/>
+              <g class="districts"><path d="M32 42h135l27 54-35 46H41z"/><path d="M518 32h178v94l-84 31-69-40z"/><path d="M38 288l103-36 55 44-25 102H46z"/><path d="M542 270l138-34 32 78-60 82H521z"/></g>
+              <g class="map-roads">
+                <path d="M-20 210C106 185 123 243 230 208s136-73 223-41 157 83 310 31"/>
+                <path d="M265-20c24 86 70 127 57 203s-34 144 5 268"/>
+                <path d="M480-20c-5 79-36 120-7 183s72 87 93 287"/>
+                <path d="M-15 118c138 39 201 21 285 46s163 83 268 68 149-42 222-12"/>
+                <path d="M-10 337c123-49 220-84 318-46s152 85 268 70 133-64 182-84"/>
+                <path d="M104-15c40 90 21 144 43 205s84 109 92 254"/>
+                <path d="M665-15c-49 82-28 145-66 208s-59 128-34 252"/>
+              </g>
+              <g class="street-names"><text x="44" y="179">G.S.T. ROAD</text><text x="364" y="398">SRM UNIVERSITY ROAD</text><text x="531" y="210">POTHERI</text></g>
+              <g id="route-lines"></g>
+              <g id="map-markers"></g>
+              <g id="ambulance-layer"></g>
+            </svg>
+            <div class="map-callout"><span class="callout-dot"></span><div><b>INCIDENT PIN</b><small>SRM Kattankulathur · demo location</small></div></div>
+            <div class="map-legend" aria-label="Route line colors"><span><i class="legend-swatch dim"></i>Dim · blocked / low fit</span><span><i class="legend-swatch dark"></i>Dark · congestion</span><span><i class="legend-swatch bright"></i>Bright · possible</span><span><i class="legend-swatch active"></i>Highlighted · selected</span></div>
+          </div>
+          <div class="map-footer"><span><i class="small-live"></i> <b id="map-live-label">12 route options</b> · 4 hospital nodes</span><span>Illustrative geometry · not GPS navigation</span></div>
+        </article>
+
+        <aside class="panel hospital-panel">
+          <div class="panel-heading hospital-heading"><div><div class="section-kicker">DESTINATION READINESS <span class="sim-badge">DEMO FEED</span></div><h2>Hospital capacity</h2></div><button class="refresh-button" id="refresh-data" type="button" aria-label="Refresh simulated capacity">↻</button></div>
+          <div class="readiness-note"><span>i</span><span>Choose by <b>equipment fit + travel risk</b>, not distance alone.</span></div>
+          <div id="hospital-list" class="hospital-list" aria-live="polite"></div>
+        </aside>
+      </section>
+
+      <section class="panel route-panel">
+        <div class="route-panel-head">
+          <div><div class="section-kicker">MULTI-ROUTE DECISION MATRIX <span class="sim-badge">12 OPTIONS</span></div><h2>Compare routes to all four destinations</h2><p>Each destination has three variants; the demo score is a routing heuristic, not a survival probability.</p></div>
+          <div class="route-summary"><small>SELECTED PLAN</small><strong id="selected-plan">Awaiting route choice</strong><span id="selected-subtitle">Choose a possible or congested option below</span></div>
+        </div>
+        <div class="route-table-wrap">
+          <table class="route-table">
+            <thead><tr><th>DESTINATION / ROUTE</th><th>STATUS</th><th>EQUIPMENT MATCH</th><th>EST. TIME</th><th>DEMO ROUTE SUCCESS SCORE</th><th></th></tr></thead>
+            <tbody id="route-table-body"></tbody>
+          </table>
+        </div>
+        <div class="dispatch-bar">
+          <div class="crew-status"><span class="crew-icon">＋</span><div><small>AVAILABLE VEHICLE</small><strong>Ambulance A-12 <i>· READY</i></strong></div></div>
+          <div class="dispatch-hint" id="dispatch-hint">Select a route to prepare the dispatch.</div>
+          <button id="dispatch-button" type="button" disabled>Dispatch ambulance <span>→</span></button>
+          <button id="pickup-button" class="secondary-action" type="button" hidden>Confirm patient pickup</button>
+          <button id="arrive-button" class="secondary-action" type="button" hidden>Complete hospital arrival</button>
+        </div>
+        <div class="transport-message" id="transport-message" role="status" aria-live="polite"></div>
+      </section>
+
+      <footer class="safety-footer"><span>⚕</span><p><b>Prototype only.</b> Hospital capacity, equipment, traffic, locations, route times and scores are simulated. This is not connected to 108, live hospitals, GPS, clinical records or emergency dispatch. It does not provide diagnosis or medical advice; call local emergency services for a real emergency.</p><span class="footer-version">REACHAID · HACKATHON DEMO</span></footer>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
